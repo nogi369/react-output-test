@@ -96,7 +96,9 @@ describe("【Hooksテスト】useApp test", () => {
         id: 3,
         title: expectTodoTitle,
       });
+      // 引数
       eventObject.target.value = "";
+      eventObject.key = "";
       const { result } = renderHook(() => useTodo());
       // addInputValue
       expect(result.current[0].addInputValue).toBe("");
@@ -123,6 +125,7 @@ describe("【Hooksテスト】useApp test", () => {
         const targetId = 1;
         const targetTitle = "テスト";
         // mock化
+        // https://stackoverflow.com/questions/41732903/stubbing-window-functions-in-jest
         window.confirm = vi.fn().mockReturnValueOnce(true); // 「はい」を押す = true
         // 予測値
         expectTodoList = INIT_TODO_LIST.filter((todo) => todo.id !== targetId);
@@ -140,6 +143,31 @@ describe("【Hooksテスト】useApp test", () => {
         act(() => result.current[1].handleDeleteTodo(targetId, targetTitle));
         expect(result.current[0].showTodoList).toEqual(expectTodoList); // INIT_TODO_LIST と showTodoList で表示される内容は別物
       });
+    });
+  });
+  describe("【関数テスト】handleChangeSearchKeyword", () => {
+    test("【正常系】検索ワードがある場合、検索された結果が反映される", () => {
+      const expectValue = [INIT_TODO_LIST[0]]; // Todoリストの0番目の要素を変数に代入する
+      const eventObject = {
+        target: {
+          value: "Todo1", // 存在するデータを用意する
+        },
+      };
+      const { result } = renderHook(() => useTodo());
+      // handleChangeSearchKeyword
+      act(() => result.current[1].handleChangeSearchKeyword(eventObject));
+      expect(result.current[0].showTodoList).toEqual(expectValue); // 実装の違い(expectValueが入る)
+    });
+    test("【正常系】検索ワードがない場合、元のTodoリストが反映される", () => {
+      const expectValue = INIT_TODO_LIST;
+      const eventObject = {
+        target: {
+          value: "", // 検索キーワードなし
+        },
+      };
+      const { result } = renderHook(() => useTodo());
+      act(() => result.current[1].handleChangeSearchKeyword(eventObject));
+      expect(result.current[0].showTodoList).toEqual(expectValue);
     });
   });
 });
