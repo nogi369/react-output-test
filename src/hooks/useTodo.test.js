@@ -88,5 +88,30 @@ describe("【Hooksテスト】useApp test", () => {
       expect(result.current[0].showTodoList).not.toEqual(expectTodoList);
       expect(result.current[0].addInputValue).not.toBe("");
     });
+    test("【正常系】入力値がない場合、処理が発生しないこと", () => {
+      // 3
+      // 予測値
+      const expectTodoTitle = "Todo5";
+      expectTodoList = INIT_TODO_LIST.concat({
+        id: 3,
+        title: expectTodoTitle,
+      });
+      eventObject.target.value = "";
+      const { result } = renderHook(() => useTodo());
+      // addInputValue
+      expect(result.current[0].addInputValue).toBe("");
+      act(() => result.current[1].onChangeAddInputValue(eventObject));
+      // expect(result.current[0].addInputValue).not.toBe(expectTodoTitle);
+      expect(result.current[0].addInputValue).toBe(""); // 処理が発生しない = そのままでOK
+      // handleAddTodo
+      act(() => result.current[1].handleAddTodo(eventObject));
+      expect(result.current[0].showTodoList).not.toEqual(expectTodoList);
+      // expect(result.current[0].addInputValue).toBe(""); // addInputValueで確認できてるから書く必要がない
+    });
+
+    test("【正常系】検索キーワードがある場合", () => {
+      // ４
+      // TODO: 確認1: 検索結果でshowTodoListが更新されること
+    });
   });
 });
