@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { useTodo } from "./useTodo";
 import { act } from "react-dom/test-utils";
 import { INIT_TODO_LIST } from "../constants/data";
@@ -77,7 +77,7 @@ describe("【Hooksテスト】useApp test", () => {
         title: expectTodoTitle,
       });
       eventObject.target.value = expectTodoTitle;
-      eventObject.key = ""; // 合ってた
+      eventObject.key = "";
       const { result } = renderHook(() => useTodo());
       // addInputValue
       expect(result.current[0].addInputValue).toBe("");
@@ -112,6 +112,26 @@ describe("【Hooksテスト】useApp test", () => {
     test("【正常系】検索キーワードがある場合", () => {
       // ４
       // TODO: 確認1: 検索結果でshowTodoListが更新されること
+    });
+
+    describe("【関数テスト】handleDeleteTodo", () => {
+      let expectTodoList = [];
+      beforeEach(() => {
+        expectTodoList = [];
+      });
+      test("【正常系】todoが削除されること", () => {
+        const targetId = 1;
+        const targetTitle = "テスト";
+        // mock化
+        window.confirm = vi.fn().mockReturnValueOnce(true); // 「はい」を押す = true
+        // 予測値
+        expectTodoList = INIT_TODO_LIST.filter((todo) => todo.id !== targetId);
+
+        const { result } = renderHook(() => useTodo());
+        // handleDeleteTodo
+        act(() => result.current[1].handleDeleteTodo(targetId, targetTitle)); // handleDeleteTodoの引数を渡す
+        expect(result.current[0].showTodoList).toEqual(expectTodoList); // expectTodoList = []
+      });
     });
   });
 });
