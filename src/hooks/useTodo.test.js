@@ -141,11 +141,11 @@ describe("【Hooksテスト】useApp test", () => {
         expectTodoList = INIT_TODO_LIST; // Todoリストを定義する
         const { result } = renderHook(() => useTodo());
         act(() => result.current[1].handleDeleteTodo(targetId, targetTitle));
-        expect(result.current[0].showTodoList).toEqual(expectTodoList); // INIT_TODO_LIST と showTodoList で表示される内容は別物
+        expect(result.current[0].showTodoList).toEqual(expectTodoList); // showTodoListで表示される内容はINIT_TODO_LIST
       });
     });
   });
-  describe("【関数テスト】handleChangeSearchKeyword", () => {
+  describe("【関数テスト】handleChangeSearchTodo", () => {
     test("【正常系】検索ワードがある場合、検索された結果が反映される", () => {
       const expectValue = [INIT_TODO_LIST[0]]; // Todoリストの0番目の要素を変数に代入する
       const eventObject = {
